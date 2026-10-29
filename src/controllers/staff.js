@@ -8,13 +8,17 @@ class StaffController {
 
     }
 
-    async createStaff(req, res) {
-        let resData = await staffService.createStaff(req)
+    async createStaff(req, res, next) {
+        let resData = await staffService.createStaff(req,res,next)
+
+        if (resData.status >= 400) {
+            return next(new ValidationError(400, error.message))
+        }
         return res.status(resData.status).json(resData)
     }
 
-    async deleteStaff(req, res) {
-        let resData = await staffService.deleteStaff(req)
+    async deleteStaff(req, res,next) {
+        let resData = await staffService.deleteStaff(req,res,next)
         return res.status(resData.status).json(resData)
 
     }

@@ -1,5 +1,6 @@
 import pool from "../config/db.js"
 import argon from "argon2"
+import { NotFoundError } from "../utils/error.js"
 
 class StaffService {
     constructor() { }
@@ -13,15 +14,12 @@ class StaffService {
         }
     }
 
-    async createStaff(req, res) {
+    async createStaff(req, res, next) {
         const { fullname, phone, password, role } = req.body
 
         let existStaff = await pool.query("select * from staff where phone=$1", [phone])
         if (existStaff.rows.length) {
-            return {
-                status: 409,
-                message: "user already exist with this phone"
-            }
+            return next(new conflictError(409, "user already exist"))
         }
 
         const hashPass = await argon.hash(password)
@@ -34,21 +32,20 @@ class StaffService {
         }
     }
 
-    async deleteStaff(req){
-        const {userId} = req.params
+    async deleteStaff(req,res,next) {
+        const { userId } = req.params
+
         let existStaff = await pool.query("select * from staff where id=$1", [userId])
         if (!existStaff.rows.length) {
-            return {
-                status: 404,
-                message: "user not found with this userId"
-            }
+            next(new NotFoundError(404, "user not found with this userId"))
+
         }
 
-        await pool.query("update staff set status='inactive' where id=$1",[userId])
-        
+        await pool.query("update staff set status='inactive' where id=$1", [userId])
+
         return {
-            status:200,
-            message:"user deleted"
+            status: 200,
+            message: "user deleted"
         }
     }
 }
