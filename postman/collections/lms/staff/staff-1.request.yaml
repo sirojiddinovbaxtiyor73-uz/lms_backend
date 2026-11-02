@@ -1,0 +1,18 @@
+$kind: http-request
+name: staff
+url: http://localhost:9090/api/v1/staff
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \    \"fullname\":\"dilshod\",\r
+
+    \    \"phone\":\"+998976543213\",\r
+
+    \    \"password\":\"123456\",\r
+
+    \    \"role\":\"admin\"\r
+
+    }"
+order: 2000

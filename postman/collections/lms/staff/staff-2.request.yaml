@@ -1,0 +1,5 @@
+$kind: http-request
+name: staff
+url: ""
+method: DELETE
+order: 2731

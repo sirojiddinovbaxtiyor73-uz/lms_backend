@@ -2,8 +2,8 @@ import staffService from "../services/staff.js"
 class StaffController {
     constructor() { }
 
-    async getAllStaff(req, res) {
-        let resData = await staffService.getStaffs()
+    async getAllStaff(req, res,next) {
+        let resData = await staffService.getStaffs(req,res,next)
         return res.status(resData.status).json(resData)
 
     }

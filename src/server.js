@@ -1,5 +1,7 @@
 import express from "express"
 import main from "./routers/index.js"
+import fs from "fs"
+import path from "path"
 import { configDotenv } from "dotenv"
 configDotenv()
 
@@ -12,6 +14,15 @@ app.use((error,req,res,next)=>{
         return res.status(error.status).json({
             status:error.status,
             message:error.message
+        })
+    }else{
+
+        fs.appendFileSync(path.join(process.cwd(),"src","log","logger.txt"),
+        `[${new Date().toLocaleString()}]-${req.method}-${req.url}-${error.message}\n`
+        )
+        return res.status(error.status).json({
+            status:error.status,
+            message:"Internal server error"
         })
     }
 })
