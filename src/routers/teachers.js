@@ -7,6 +7,8 @@ import { roleGuard } from "../guards/role.guard.js"
 
 router
     .get("/teachers",authGuard,roleGuard("admin"),teacherController.getTeachers)
-    .post("/teachers",teacherController.createTeacher)
+    .post("/teachers",authGuard,roleGuard("admin"),validationMiddleware.teacherCreate,teacherController.createTeacher)
+    .delete("/teachers/:teacherId",authGuard,roleGuard("admin"),teacherController.deleteTeacher)
+    .patch("/teachers/:teacherId",authGuard,roleGuard("admin"),validationMiddleware.teacherUpdate,teacherController.updateTeacher)
 
 export default router

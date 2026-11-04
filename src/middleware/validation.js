@@ -8,5 +8,21 @@ export default {
             return next(new ValidationError(400,error.message))
         }
         return next()
+    },
+
+    teacherCreate: (req,res,next)=>{
+        let {error} = schema.teacherSchema.validate(req.body)
+        if(error){
+            return next(new ValidationError(400,error.message))
+        }
+        return next()
+    },
+
+    teacherUpdate:(req,res,next)=>{
+        let {error} = schema.teacherUpdateSchema.validate(req.body)
+        if(error){
+            return next(new ValidationError(400,error.message))
+        }
+        return next()
     }
 }

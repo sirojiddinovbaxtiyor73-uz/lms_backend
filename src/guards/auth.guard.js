@@ -15,7 +15,7 @@ export const authGuard = async (req, res, next) => {
         if (error.name == "JsonWebTokenError") {
             return next(new UnauthorizedError(401, error.message))
         }
-        if (error.name == "TokenExpiredEror") {
+        if (error.name == "TokenExpiredError") {
             return next(new UnauthorizedError(401, error.message))
         }
         return next(new InternalServerError(500, "Internal Server Error"))

@@ -28,3 +28,17 @@
 [11/2/2026, 9:22:20 PM]-GET-/api/v1/staff-Internal Server Error
 [11/2/2026, 9:22:25 PM]-GET-/api/v1/staff-Internal Server Error
 [11/2/2026, 9:22:26 PM]-GET-/api/v1/staff-Internal Server Error
+[11/3/2026, 6:40:39 PM]-POST-/api/v1/auth/login-TypeError: Cannot destructure property 'phone' of 'req.body' as it is undefined.
+[11/3/2026, 6:59:17 PM]-POST-/api/v1/teachers-error: duplicate key value violates unique constraint "teachers_phone_key"
+[11/3/2026, 6:59:32 PM]-POST-/api/v1/teachers-error: duplicate key value violates unique constraint "teachers_phone_key"
+[11/3/2026, 6:59:40 PM]-POST-/api/v1/teachers-error: duplicate key value violates unique constraint "teachers_phone_key"
+[11/3/2026, 7:16:58 PM]-GET-/api/v1/teachers-Internal Server Error
+[11/3/2026, 7:17:03 PM]-GET-/api/v1/teachers-Internal Server Error
+[11/3/2026, 7:17:18 PM]-GET-/api/v1/teachers-Internal Server Error
+[11/3/2026, 7:26:21 PM]-DELETE-/api/v1/teachers/asd-error: invalid input syntax for type integer: "asd"
+[11/3/2026, 7:26:38 PM]-DELETE-/api/v1/teachers/3asd-error: invalid input syntax for type integer: "3asd"
+[11/5/2026, 12:11:19 AM]-PATCH-/api/v1/teachers/1-ReferenceError: facebook is not defined
+[11/5/2026, 12:11:23 AM]-PATCH-/api/v1/teachers/1-ReferenceError: facebook is not defined
+[11/5/2026, 12:12:41 AM]-PATCH-/api/v1/teachers/1-error: column "facebook" does not exist
+[11/5/2026, 12:22:00 AM]-POST-/api/v1/teachers-error: column "linkedin" specified more than once
+[11/5/2026, 12:23:25 AM]-POST-/api/v1/teachers-error: INSERT has more target columns than expressions
