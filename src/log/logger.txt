@@ -42,3 +42,6 @@
 [11/5/2026, 12:12:41 AM]-PATCH-/api/v1/teachers/1-error: column "facebook" does not exist
 [11/5/2026, 12:22:00 AM]-POST-/api/v1/teachers-error: column "linkedin" specified more than once
 [11/5/2026, 12:23:25 AM]-POST-/api/v1/teachers-error: INSERT has more target columns than expressions
+[11/6/2026, 11:21:46 PM]-POST-/api/v1/categories-error: relation "categories" does not exist
+[11/6/2026, 11:24:49 PM]-POST-/api/v1/categories-TypeError: Cannot destructure property 'name' of 'req.body' as it is undefined.
+[11/6/2026, 11:24:56 PM]-GET-/api/v1/categories-categoryService.getAllCategories is not a function

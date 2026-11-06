@@ -1,6 +1,6 @@
 import pool from "../config/db.js"
 import argon from "argon2"
-import { conflictError, InternalServerError, NotFoundError } from "../utils/error.js"
+import { ErrorException  } from "../utils/error.js"
 
 class TeacherService {
     async createTeacher(req, res, next) {
@@ -17,9 +17,9 @@ class TeacherService {
             }
         } catch (error) {
             if (error.code == "23505") {
-                return next(new conflictError(409, "This phone number was previously added by the teacher!"))
+                return next(new ErrorException(409, "This phone number was previously added by the teacher!"))
             }
-            return next(new InternalServerError(500, error))
+            return next(new ErrorException(500, error))
         }
     }
 
@@ -32,7 +32,7 @@ class TeacherService {
                 data: teachers.rows
             }
         } catch (error) {
-            return next(new InternalServerError(500, error))
+            return next(new ErrorException(500, error))
         }
     }
 
@@ -41,12 +41,12 @@ class TeacherService {
             const { teacherId } = req.params
 
             if (!Number.isInteger(Number(teacherId))) {
-                return next(new NotFoundError(404, "enter only integer for teacherID"));
+                return next(new ErrorException(404, "enter only integer for teacherID"));
             }
 
             let existTeacher = await pool.query("select id from teachers where id=$1", [teacherId])
             if (!existTeacher.rows.length) {
-                return next(new NotFoundError(404, "teacher not found with this teacherID"))
+                return next(new ErrorException(404, "teacher not found with this teacherID"))
             }
 
             await pool.query("update teachers set status='inactive' where id=$1", [teacherId])
@@ -55,7 +55,7 @@ class TeacherService {
                 message: "teacher deleted"
             }
         } catch (error) {
-            return next(new InternalServerError(500, error))
+            return next(new ErrorException(500, error))
         }
     }
 
@@ -64,12 +64,12 @@ class TeacherService {
             const { teacherId } = req.params
 
             if (!Number.isInteger(Number(teacherId))) {
-                return next(new NotFoundError(404, "enter only intejer for teacherID"))
+                return next(new ErrorException(404, "enter only intejer for teacherID"))
             }
 
             let existTeacher = await pool.query("select id from teachers where id=$1", [teacherId])
             if (!existTeacher.rows.length) {
-                return next(new NotFoundError(404, "teacher not found with this teacherID"))
+                return next(new ErrorException(404, "teacher not found with this teacherID"))
             }
 
             const { fullname, phone, password, experience, job, description, portfolio, github, telegram, linkedin,facebook,instagram, status } = req.body
@@ -101,9 +101,9 @@ class TeacherService {
 
         } catch (error) {
             if (error.code == "23505") {
-                return next(new conflictError(409, "This phone number was previously added by the teacher!"))
+                return next(new ErrorException(409, "This phone number was previously added by the teacher!"))
             }
-            return next(new InternalServerError(500, error))
+            return next(new ErrorException(500, error))
 
 
         }

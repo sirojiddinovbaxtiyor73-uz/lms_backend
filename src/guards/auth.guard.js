@@ -1,11 +1,11 @@
-import { InternalServerError, UnauthorizedError } from "../utils/error.js"
+import { ErrorException } from "../utils/error.js"
 import { verifyToken } from "../utils/jwt.js"
 
 export const authGuard = async (req, res, next) => {
     try {
         let { token } = req.headers
         if (!token) {
-            return next(new UnauthorizedError(401, "UnauthorizedError"))
+            return next(new ErrorException(401, "UnauthorizedError"))
         }
 
         let user = verifyToken(token)       
@@ -13,12 +13,12 @@ export const authGuard = async (req, res, next) => {
         return next()
     } catch (error) {
         if (error.name == "JsonWebTokenError") {
-            return next(new UnauthorizedError(401, error.message))
+            return next(new ErrorException(401, error.message))
         }
         if (error.name == "TokenExpiredError") {
-            return next(new UnauthorizedError(401, error.message))
+            return next(new ErrorException(401, error.message))
         }
-        return next(new InternalServerError(500, "Internal Server Error"))
+        return next(new ErrorException(500, "Internal Server Error"))
 
     }
 }

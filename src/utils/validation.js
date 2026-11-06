@@ -39,5 +39,25 @@ export default {
         facebook: Joi.string().allow("", null),
         instagram: Joi.string().allow("", null),
         status: Joi.string().valid("active", "inactive")
-    }).min(1)
+    }).min(1),
+
+    categoriesSchema: Joi.object({
+        name: Joi.string().min(3).max(30).required()
+    }),
+
+    studentSchema: Joi.object({
+        fullName: Joi.string().min(3).max(30).required(),
+        phone: Joi.string().pattern(/^\+998(9[0123456789]|3[3]|7[1]|8[8])[0-9]{7}$/).required(),
+        password: Joi.string().min(6).required()
+
+    }),
+
+    courseSchema: Joi.object({
+        name: Joi.string().min(3).max(100).required(),
+        description: Joi.string().max(500).allow("",null),
+        level_id: Joi.number().positive().required(),
+        price: Joi.string().pattern(/^\d+$/).required(),
+        category_id: Joi.number().integer().positive().required(),
+
+    })
 }

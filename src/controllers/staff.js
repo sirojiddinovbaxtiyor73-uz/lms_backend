@@ -1,26 +1,40 @@
 import staffService from "../services/staff.js"
+import { ErrorException } from "../utils/error.js"
 class StaffController {
     constructor() { }
 
-    async getAllStaff(req, res,next) {
-        let resData = await staffService.getStaffs(req,res,next)
-        return res.status(resData.status).json(resData)
+    async getAllStaff(req, res, next) {
+        try {
+            let resData = await staffService.getStaffs()
+            return res.status(resData.status).json(resData)
+        } catch (error) {
+            return next(
+                error.status ? error : new ErrorException(500, error.message)
+            )
+        }
 
     }
 
     async createStaff(req, res, next) {
-        let resData = await staffService.createStaff(req,res,next)
-
-        if (resData.status >= 400) {
-            return next(new ValidationError(400, error.message))
+        try {
+            let resData = await staffService.createStaff(req.body)
+            return res.status(resData.status).json(resData)
+        } catch (error) {
+            return next(
+                error.status ? error : new ErrorException(500, error.message)
+            )
         }
-        return res.status(resData.status).json(resData)
     }
 
-    async deleteStaff(req, res,next) {
-        let resData = await staffService.deleteStaff(req,res,next)
-        return res.status(resData.status).json(resData)
-
+    async deleteStaff(req, res, next) {
+        try {
+            let resData = await staffService.createStaff(req.params)
+            return res.status(resData.status).json(resData)
+        } catch (error) {
+            return next(
+                error.status ? error : new ErrorException(500, error.message)
+            )
+        }
     }
 }
 
