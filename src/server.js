@@ -2,11 +2,13 @@ import express from "express"
 import main from "./routers/index.js"
 import fs from "fs"
 import path from "path"
+import fileUpload from "express-fileupload"
 import { configDotenv } from "dotenv"
 configDotenv()
 
 const app = express()
 app.use(express.json())
+app.use(fileUpload())
 app.use(main)
 
 app.use((error,req,res,next)=>{

@@ -19,7 +19,7 @@ export default {
     },
 
     CourseCreate: (req, res, next) => {
-        let { error } = schema.staffSchema.validate(req.body)
+        let { error } = schema.courseSchema.validate(req.body)
         if (error) {
             return next(new ErrorException(400, error.message))
         }

@@ -53,9 +53,9 @@ export default {
     }),
 
     courseSchema: Joi.object({
-        name: Joi.string().min(3).max(100).required(),
-        description: Joi.string().max(500).allow("",null),
-        level_id: Joi.number().positive().required(),
+        name: Joi.string().min(3).max(30).required(),
+        description: Joi.string().max(500),
+        level: Joi.string().pattern(/^(beginner|elementary|intermediate|advance)$/).required(),
         price: Joi.string().pattern(/^\d+$/).required(),
         category_id: Joi.number().integer().positive().required(),
 

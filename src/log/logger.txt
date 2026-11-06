@@ -45,3 +45,8 @@
 [11/6/2026, 11:21:46 PM]-POST-/api/v1/categories-error: relation "categories" does not exist
 [11/6/2026, 11:24:49 PM]-POST-/api/v1/categories-TypeError: Cannot destructure property 'name' of 'req.body' as it is undefined.
 [11/6/2026, 11:24:56 PM]-GET-/api/v1/categories-categoryService.getAllCategories is not a function
+[11/7/2026, 12:52:38 AM]-POST-/api/v1/courses-TypeError: Cannot destructure property 'name' of 'req.body' as it is undefined.
+[11/7/2026, 1:10:04 AM]-POST-/api/v1/courses-TypeError: Cannot destructure property 'name' of 'req.body' as it is undefined.
+[11/7/2026, 1:19:40 AM]-POST-/api/v1/courses-error: column "teacher_id" of relation "courses" does not exist
+[11/7/2026, 1:20:37 AM]-POST-/api/v1/courses-error: column "teacher_id" of relation "courses" does not exist
+[11/7/2026, 1:22:25 AM]-POST-/api/v1/courses-error: numeric field overflow

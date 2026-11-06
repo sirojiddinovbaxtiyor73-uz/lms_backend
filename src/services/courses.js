@@ -53,7 +53,7 @@ class CoursesService {
             }
 
             await pool.query(`insert into courses (banner,intro_video,name,description,level,price,category_id,teacher_id)
-                values($1,$2,$3,$4,$5,$6,$7,$8)`, [fileNameBanner, fileNameIntroVideo, name, description, level, category_id, teacherId])
+                values($1,$2,$3,$4,$5,$6,$7,$8)`, [fileNameBanner, fileNameIntroVideo, name, description, level,price, category_id, teacherId])
 
             return {
                 status: 201,
