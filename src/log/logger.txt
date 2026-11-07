@@ -50,3 +50,5 @@
 [11/7/2026, 1:19:40 AM]-POST-/api/v1/courses-error: column "teacher_id" of relation "courses" does not exist
 [11/7/2026, 1:20:37 AM]-POST-/api/v1/courses-error: column "teacher_id" of relation "courses" does not exist
 [11/7/2026, 1:22:25 AM]-POST-/api/v1/courses-error: numeric field overflow
+[11/7/2026, 7:17:16 PM]-DELETE-/api/v1/courses/5-The "cb" argument must be of type function. Received undefined
+[11/7/2026, 7:39:05 PM]-PATCH-/api/v1/courses/7-maxFileSize is not defined

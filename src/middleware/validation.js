@@ -26,6 +26,14 @@ export default {
         return next()
     },
 
+    CourseUpdate: (req, res, next) => {
+        let { error } = schema.courseUpdateSchema.validate(req.body)
+        if (error) {
+            return next(new ErrorException(400, error.message))
+        }
+        return next()
+    },
+
 
     teacherCreate: (req, res, next) => {
         let { error } = schema.teacherSchema.validate(req.body)
