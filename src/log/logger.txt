@@ -52,3 +52,8 @@
 [11/7/2026, 1:22:25 AM]-POST-/api/v1/courses-error: numeric field overflow
 [11/7/2026, 7:17:16 PM]-DELETE-/api/v1/courses/5-The "cb" argument must be of type function. Received undefined
 [11/7/2026, 7:39:05 PM]-PATCH-/api/v1/courses/7-maxFileSize is not defined
+[11/8/2026, 11:06:41 PM]-GET-/api/v1/students-studentService.getAllStudents is not a function
+[11/8/2026, 11:09:00 PM]-GET-/api/v1/students-studentService.getAllStudents is not a function
+[11/8/2026, 11:14:55 PM]-POST-/api/v1/students-error: duplicate key value violates unique constraint "students_phone_key"
+[11/8/2026, 11:15:01 PM]-POST-/api/v1/students-error: duplicate key value violates unique constraint "students_phone_key"
+[11/9/2026, 12:29:54 AM]-GET-/api/v1/students-Cannot read properties of undefined (reading 'query')

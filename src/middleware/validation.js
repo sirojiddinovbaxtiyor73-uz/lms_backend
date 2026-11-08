@@ -11,7 +11,7 @@ export default {
     },
 
     createStudent: (req, res, next) => {
-        let { error } = schema.staffSchema.validate(req.body)
+        let { error } = schema.studentSchema.validate(req.body)
         if (error) {
             return next(new ErrorException(400, error.message))
         }
@@ -58,5 +58,13 @@ export default {
 
         }
         return next()
-    }
+    },
+
+    studentUpdate: (req, res, next) => {
+        let { error } = schema.studentUpdateSchema.validate(req.body)
+        if (error) {
+            return next(new ErrorException(400, error.message))
+        }
+        return next()
+    },
 }

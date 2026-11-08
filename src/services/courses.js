@@ -6,10 +6,9 @@ import { randomUUID } from "crypto"
 
 
 
-const imageTypes = ["image/png", "image/jpeg", "image/svg+xml","image/gif"]
+const imageTypes = ["image/png", "image/jpeg", "image/svg+xml", "image/gif"]
 const videoTypes = ["video/mp4", "video/webm"]
 const maxBannerSize = 5 * 1024 * 1024
-const maxFileSize = 5 * 1024 * 1024
 
 class CoursesService {
 
@@ -128,78 +127,78 @@ class CoursesService {
     }
 
     async updateCourse(req) {
-    const courseId = Number(req.params.courseId)
-    if (!Number.isInteger(courseId) || courseId <= 0) {
-        throw new ErrorException(400, "Invalid course id")
-    }
-
-    const course = await pool.query(
-        "select teacher_id, banner, intro_video from courses where id=$1", [courseId]
-    )
-    if (!course.rows.length) {
-        throw new ErrorException(404, "Course not found")
-    }
-
-    const { teacher_id, banner: oldBanner, intro_video: oldVideo } = course.rows[0]
-    if (req.user.role === "teacher" && teacher_id !== req.user.id) {
-        throw new ErrorException(403, "Forbidden")
-    }
-
-    const { name, description, level, price, category_id } = req.body ?? {}
-    const banner = req.files?.banner
-    const introVideo = req.files?.introVideo
-
-    const hasData = [name, description, level, price, category_id].some(v => v !== undefined)
-    if (!hasData && !banner && !introVideo) {
-        throw new ErrorException(400, "Nothing to update")
-    }
-
-    if (banner) {
-        if (!imageTypes.includes(banner.mimetype)) {
-            throw new ErrorException(415, "Banner must be an image (png, jpg, svg, gif)")
+        const courseId = Number(req.params.courseId)
+        if (!Number.isInteger(courseId) || courseId <= 0) {
+            throw new ErrorException(400, "Invalid course id")
         }
-        if (banner.size > maxFileSize) {
-            throw new ErrorException(413, "Banner must be less than 5 MB")
-        }
-    }
-    if (introVideo) {
-        if (!videoTypes.includes(introVideo.mimetype)) {
-            throw new ErrorException(415, "Intro video must be mp4")
-        }
-        if (introVideo.size > maxFileSize) {
-            throw new ErrorException(413, "Intro video must be less than 5 MB")
-        }
-    }
 
-    if (name !== undefined) {
-        const exist = await pool.query("select id from courses where name=$1 and id<>$2", [name, courseId])
-        if (exist.rows.length) {
-            throw new ErrorException(409, "Course already exist!")
+        const course = await pool.query(
+            "select teacher_id, banner, intro_video from courses where id=$1", [courseId]
+        )
+        if (!course.rows.length) {
+            throw new ErrorException(404, "Course not found")
         }
-    }
 
-    if (category_id !== undefined) {
-        const category = await pool.query("select id from categories where id=$1", [category_id])
-        if (!category.rows.length) {
-            throw new ErrorException(404, "Category not found")
+        const { teacher_id, banner: oldBanner, intro_video: oldVideo } = course.rows[0]
+        if (req.user.role === "teacher" && teacher_id !== req.user.id) {
+            throw new ErrorException(403, "Forbidden")
         }
-    }
 
-    let newBanner = null
-    if (banner) {
-        newBanner = randomUUID() + path.extname(banner.name)
-        await banner.mv(path.join(process.cwd(), "src", "uploads", "banner", newBanner))
-    }
+        const { name, description, level, price, category_id } = req.body ?? {}
+        const banner = req.files?.banner
+        const introVideo = req.files?.introVideo
 
-    let newVideo = null
-    if (introVideo) {
-        newVideo = randomUUID() + path.extname(introVideo.name)
-        await introVideo.mv(path.join(process.cwd(), "src", "uploads", "introVideo", newVideo))
-    }
+        const hasData = [name, description, level, price, category_id].some(v => v !== undefined)
+        if (!hasData && !banner && !introVideo) {
+            throw new ErrorException(400, "Nothing to update")
+        }
 
-    try {
-        await pool.query(
-            `update courses set
+        if (banner) {
+            if (!imageTypes.includes(banner.mimetype)) {
+                throw new ErrorException(415, "Banner must be an image (png, jpg, svg, gif)")
+            }
+            if (banner.size > maxBannerSize) {
+                throw new ErrorException(413, "Banner must be less than 5 MB")
+            }
+        }
+        if (introVideo) {
+            if (!videoTypes.includes(introVideo.mimetype)) {
+                throw new ErrorException(415, "Intro video must be mp4")
+            }
+            if (introVideo.size > maxBannerSize) {
+                throw new ErrorException(413, "Intro video must be less than 5 MB")
+            }
+        }
+
+        if (name !== undefined) {
+            const exist = await pool.query("select id from courses where name=$1 and id<>$2", [name, courseId])
+            if (exist.rows.length) {
+                throw new ErrorException(409, "Course already exist!")
+            }
+        }
+
+        if (category_id !== undefined) {
+            const category = await pool.query("select id from categories where id=$1", [category_id])
+            if (!category.rows.length) {
+                throw new ErrorException(404, "Category not found")
+            }
+        }
+
+        let newBanner = null
+        if (banner) {
+            newBanner = randomUUID() + path.extname(banner.name)
+            await banner.mv(path.join(process.cwd(), "src", "uploads", "banner", newBanner))
+        }
+
+        let newVideo = null
+        if (introVideo) {
+            newVideo = randomUUID() + path.extname(introVideo.name)
+            await introVideo.mv(path.join(process.cwd(), "src", "uploads", "introVideo", newVideo))
+        }
+
+        try {
+            await pool.query(
+                `update courses set
                 name = coalesce($1, name),
                 description = coalesce($2, description),
                 level = coalesce($3, level),
@@ -208,37 +207,37 @@ class CoursesService {
                 banner = coalesce($6, banner),
                 intro_video = coalesce($7, intro_video)
              where id = $8`,
-            [name, description, level, price, category_id, newBanner, newVideo, courseId]
-        )
-    } catch (error) {
+                [name, description, level, price, category_id, newBanner, newVideo, courseId]
+            )
+        } catch (error) {
+            if (newBanner) {
+                await fs.unlink(path.join(process.cwd(), "src", "uploads", "banner", newBanner)).catch(() => { })
+            }
+            if (newVideo) {
+                await fs.unlink(path.join(process.cwd(), "src", "uploads", "introVideo", newVideo)).catch(() => { })
+            }
+
+            if (error.code === "23505") {
+                throw new ErrorException(409, "Course already exist!")
+            }
+            if (error.code === "23503") {
+                throw new ErrorException(404, "Category not found")
+            }
+            throw error
+        }
+
         if (newBanner) {
-            await fs.unlink(path.join(process.cwd(), "src", "uploads", "banner", newBanner)).catch(() => { })
+            await fs.unlink(path.join(process.cwd(), "src", "uploads", "banner", oldBanner)).catch(() => { })
         }
-        if (newVideo) {
-            await fs.unlink(path.join(process.cwd(), "src", "uploads", "introVideo", newVideo)).catch(() => { })
+        if (newVideo && oldVideo) {
+            await fs.unlink(path.join(process.cwd(), "src", "uploads", "introVideo", oldVideo)).catch(() => { })
         }
 
-        if (error.code === "23505") {
-            throw new ErrorException(409, "Course already exist!")
+        return {
+            status: 200,
+            message: "course updated"
         }
-        if (error.code === "23503") {
-            throw new ErrorException(404, "Category not found")
-        }
-        throw error
     }
-
-    if (newBanner) {
-        await fs.unlink(path.join(process.cwd(), "src", "uploads", "banner", oldBanner)).catch(() => { })
-    }
-    if (newVideo && oldVideo) {
-        await fs.unlink(path.join(process.cwd(), "src", "uploads", "introVideo", oldVideo)).catch(() => { })
-    }
-
-    return {
-        status: 200,
-        message: "course updated"
-    }
-}
 
 
 }
