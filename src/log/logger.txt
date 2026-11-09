@@ -57,3 +57,8 @@
 [11/8/2026, 11:14:55 PM]-POST-/api/v1/students-error: duplicate key value violates unique constraint "students_phone_key"
 [11/8/2026, 11:15:01 PM]-POST-/api/v1/students-error: duplicate key value violates unique constraint "students_phone_key"
 [11/9/2026, 12:29:54 AM]-GET-/api/v1/students-Cannot read properties of undefined (reading 'query')
+[11/9/2026, 5:29:47 PM]-GET-/api/v1/sections-column "status" does not exist
+[11/9/2026, 7:06:59 PM]-PATCH-/api/v1/sections/1-TypeError: Cannot destructure property 'name' of 'req.body' as it is undefined.
+[11/9/2026, 7:07:30 PM]-PATCH-/api/v1/sections/1-error: column "c_id" does not exist
+[11/9/2026, 9:29:54 PM]-DELETE-/api/v1/sections/2-error: syntax error at or near "selct"
+[11/9/2026, 11:26:31 PM]-GET-/api/v1/lessons/3-Cannot convert object to primitive value

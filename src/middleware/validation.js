@@ -67,4 +67,20 @@ export default {
         }
         return next()
     },
+
+    LessonCreate: (req, res, next) => {
+        let { error } = schema.lessonSchema.validate(req.body ?? {})
+        if (error) {
+            return next(new ErrorException(400, error.message))
+        }
+        return next()
+    },
+
+    LessonUpdate: (req, res, next) => {
+        let { error } = schema.lessonUpdateSchema.validate(req.body ?? {})
+        if (error) {
+            return next(new ErrorException(400, error.message))
+        }
+        return next()
+    }
 }

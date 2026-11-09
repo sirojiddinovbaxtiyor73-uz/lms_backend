@@ -74,5 +74,16 @@ export default {
         level: Joi.string().valid("beginner", "elementary", "intermediate", "advance"),
         price: Joi.string().pattern(/^\d+(\.\d{1,2})?$/),
         category_id: Joi.number().integer().positive()
+    }),
+
+    lessonSchema: Joi.object({
+        name: Joi.string().trim().min(2).max(255).required(),
+        description: Joi.string().max(1000).allow("", null),
+        section_id: Joi.number().integer().positive().required()
+    }),
+
+    lessonUpdateSchema: Joi.object({
+        name: Joi.string().trim().min(2).max(255),
+        description: Joi.string().max(1000).allow("", null)
     })
 }

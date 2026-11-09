@@ -12,6 +12,21 @@ class SectionController {
 
         }
     }
+    async updateSection(req, res, next) {
+        let resdate = await categorySections.updateSection(req, res, next)
+        if (resdate) {
+            return res.status(resdate.status).json(resdate)
+
+        }
+    }
+    async deleteSection(req, res, next) {
+        let resdate = await categorySections.deleteSection(req, res, next)
+        if (resdate) {
+            return res.status(resdate.status).json(resdate)
+
+        }
+    }
+
 }
 
 const sectionController = new SectionController()
