@@ -19,6 +19,15 @@ class StudentController {
         }
     }
 
+    async getStudentCourses(req, res, next) {
+        try {
+            const result = await studentService.getStudentCourses(req)
+            return res.status(result.status).json(result)
+        } catch (error) {
+            return next(error)
+        }
+    }
+
     async createStudent(req, res, next) {
         try {
             const result = await studentService.createStudent(req)

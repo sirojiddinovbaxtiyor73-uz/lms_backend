@@ -82,5 +82,29 @@ export default {
             return next(new ErrorException(400, error.message))
         }
         return next()
+    },
+
+    MaterialCreate: (req, res, next) => {
+        let { error } = schema.materialSchema.validate(req.body ?? {})
+        if (error) {
+            return next(new ErrorException(400, error.message))
+        }
+        return next()
+    },
+
+    MaterialUpdate: (req, res, next) => {
+        let { error } = schema.materialUpdateSchema.validate(req.body ?? {})
+        if (error) {
+            return next(new ErrorException(400, error.message))
+        }
+        return next()
+    },
+
+    PaymentCreate: (req, res, next) => {
+        let { error } = schema.paymentSchema.validate(req.body ?? {})
+        if (error) {
+            return next(new ErrorException(400, error.message))
+        }
+        return next()
     }
 }

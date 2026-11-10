@@ -7,7 +7,7 @@ class AuthController {
             let resData = await authService.login(req, res, next)
             return res.status(resData.status).json(resData)
         } catch (error) {
-            if (error.code = "23505") {
+            if (error.code == "23505") {
                 return next(new ErrorException(500, error.message))
             }
 

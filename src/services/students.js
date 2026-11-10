@@ -57,6 +57,43 @@ class StudentService {
         }
     }
 
+    async getStudentCourses(req) {
+        const studentId = Number(req.params.studentId)
+
+        if (!Number.isInteger(studentId) || studentId <= 0) {
+            throw new ErrorException(400, "Invalid student id")
+        }
+
+        if (req.user.role === "student" && studentId !== req.user.id) {
+            throw new ErrorException(403, "Forbidden")
+        }
+
+        const student = await pool.query(
+            "select id, fullname from students where id=$1",
+            [studentId]
+        )
+
+        if (!student.rows.length) {
+            throw new ErrorException(404, "Student not found")
+        }
+
+        const courses = await pool.query(
+            `select c.id, c.banner, c.intro_video, c.name, c.description,
+                c.level, c.price, c.category_id, c.status, c.created_at
+         from studentcourse sc
+         join courses c on c.id = sc.courses_id
+         where sc.student_id = $1
+         order by c.id`,
+            [studentId]
+        )
+
+        return {
+            status: 200,
+            student: student.rows[0],
+            data: courses.rows
+        }
+    }
+
     async createStudent(req) {
         const { fullname, phone, password } = req.body
 

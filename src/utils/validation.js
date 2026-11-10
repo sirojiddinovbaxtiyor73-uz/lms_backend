@@ -85,5 +85,23 @@ export default {
     lessonUpdateSchema: Joi.object({
         name: Joi.string().trim().min(2).max(255),
         description: Joi.string().max(1000).allow("", null)
+    }),
+
+    materialSchema: Joi.object({
+        lesson_id: Joi.number().integer().positive().required(),
+        description: Joi.string().trim().min(2).max(1000).required()
+    }),
+
+    materialUpdateSchema: Joi.object({
+        description: Joi.string().trim().min(2).max(1000),
+        remove_file_ids: Joi.string().pattern(/^\d+(,\d+)*$/)
+    }),
+
+    paymentSchema: Joi.object({
+        student_id: Joi.number().integer().positive().required(),
+        course_id: Joi.number().integer().positive().required(),
+        amount: Joi.number().positive().max(9999999999),
+        type: Joi.string().valid("cash", "payme", "card").required(),
+        status: Joi.string().valid("paid", "pending", "cancelled").required()
     })
 }
