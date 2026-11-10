@@ -21,6 +21,35 @@ class CoursesService {
         }
     }
 
+    async getTeacherCourses(req) {
+        const teacherId = Number(req.params.teacherId)
+        if (!Number.isInteger(teacherId) || teacherId <= 0) {
+            throw new ErrorException(400, "Invalid teacher id")
+        }
+
+        if (req.user.role === "teacher" && teacherId !== req.user.id) {
+            throw new ErrorException(403, "Forbidden")
+        }
+
+        const teacher = await pool.query("select id, fullname from teachers where id=$1", [teacherId])
+        if (!teacher.rows.length) {
+            throw new ErrorException(404, "Teacher not found")
+        }
+
+        const courses = await pool.query(
+            `select id, banner, intro_video, name, description, level, price, category_id, status, created_at
+         from courses
+         where teacher_id=$1
+         order by id`, [teacherId]
+        )
+
+        return {
+            status: 200,
+            teacher: teacher.rows[0],
+            data: courses.rows
+        }
+    } 
+
     async createCourse(req) {
         const { name, description, level, price, category_id } = req.body
         const banner = req.files?.banner

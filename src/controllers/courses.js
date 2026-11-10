@@ -10,6 +10,15 @@ class CoursesController {
         }
     }
 
+    async getTeacherCourses(req, res, next) {
+        try {
+            const result = await coursesService.getTeacherCourses(req)
+            return res.status(result.status).json(result)
+        } catch (error) {
+            return next(error)
+        }
+    }
+
     async createCourse(req, res, next) {
         try {
             const result = await coursesService.createCourse(req)
