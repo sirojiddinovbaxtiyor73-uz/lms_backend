@@ -37,6 +37,26 @@ class ExamController {
             return next(error)
         }
     }
+
+
+    async getStudentExams(req, res, next) {
+        try {
+            const result = await examsService.getStudentExams(req)
+            return res.status(result.status).json(result)
+        } catch (error) {
+            return next(error)
+        }
+    }
+
+    async submitStudentExam(req, res, next) {
+        try {
+            const result = await examsService.submitStudentExam(req)
+            return res.status(result.status).json(result)
+        } catch (error) {
+            return next(error)
+        }
+    }
+
 }
 
 const examController = new ExamController()

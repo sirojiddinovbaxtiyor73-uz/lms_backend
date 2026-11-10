@@ -63,3 +63,4 @@
 [11/9/2026, 9:29:54 PM]-DELETE-/api/v1/sections/2-error: syntax error at or near "selct"
 [11/9/2026, 11:26:31 PM]-GET-/api/v1/lessons/3-Cannot convert object to primitive value
 [11/10/2026, 4:33:25 PM]-POST-/api/v1/payments-column "status" of relation "payments" does not exist
+[11/10/2026, 8:41:38 PM]-POST-/api/v1/exams-there is no unique or exclusion constraint matching the ON CONFLICT specification

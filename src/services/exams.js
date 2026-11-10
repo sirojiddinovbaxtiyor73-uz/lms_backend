@@ -45,15 +45,24 @@ class ExamsService {
         }
     }
 
+
     async createExam(req) {
-        const { lesson_id, question, option_a, option_b, option_c, option_d, correct_answer } = req.body
+        const {
+            lesson_id,
+            question,
+            option_a,
+            option_b,
+            option_c,
+            option_d,
+            correct_answer
+        } = req.body
 
         const lesson = await pool.query(
             `select l.id, c.teacher_id, c.status
-             from lessons l
-             join sections s on s.id = l.section_id
-             join courses c on c.id = s.course_id
-             where l.id=$1`,
+         from lessons l
+         join sections s on s.id = l.section_id
+         join courses c on c.id = s.course_id
+         where l.id=$1`,
             [lesson_id]
         )
 
@@ -61,7 +70,10 @@ class ExamsService {
             throw new ErrorException(404, "Lesson not found")
         }
 
-        if (req.user.role === "teacher" && lesson.rows[0].teacher_id !== req.user.id) {
+        if (
+            req.user.role === "teacher" &&
+            lesson.rows[0].teacher_id !== req.user.id
+        ) {
             throw new ErrorException(403, "You can't add exam to this lesson")
         }
 
@@ -69,10 +81,13 @@ class ExamsService {
             throw new ErrorException(400, "Course is not active")
         }
 
-        await pool.query(
-            `insert into exams
-            (lesson_id, question, option_a, option_b, option_c, option_d, correct_answer)
-            values($1,$2,$3,$4,$5,$6,$7)`,
+        const result = await pool.query(
+            `INSERT INTO exams
+    (lesson_id, question, option_a, option_b, option_c, option_d, correct_answer)
+    VALUES ($1,$2,$3,$4,$5,$6,$7)
+    ON CONFLICT (lesson_id, (LOWER(TRIM(question))))
+    DO NOTHING
+    RETURNING *`,
             [
                 lesson_id,
                 question.trim(),
@@ -84,11 +99,17 @@ class ExamsService {
             ]
         )
 
+        if (!result.rows.length) {
+            throw new ErrorException(409, "Exam already exists")
+        }
+
         return {
             status: 201,
-            message: "Exam added"
+            message: "Exam added",
+            data: result.rows[0]
         }
     }
+
 
     async updateExam(req) {
         const examId = Number(req.params.examId)
@@ -185,6 +206,150 @@ class ExamsService {
             message: "Exam deleted"
         }
     }
+
+
+    async getStudentExams(req) {
+        const lessonId = Number(req.params.lessonId)
+        const studentId = req.user.id
+
+        if (!Number.isInteger(lessonId) || lessonId <= 0) {
+            throw new ErrorException(400, "Invalid lesson id")
+        }
+
+        const lesson = await pool.query(
+            `select l.id, l.name, c.id as course_id, c.name as course_name
+             from lessons l
+             join sections s on s.id = l.section_id
+             join courses c on c.id = s.course_id
+             join studentcourse sc on sc.courses_id = c.id
+             where l.id=$1 and sc.student_id=$2 and c.status='active'`,
+            [lessonId, studentId]
+        )
+
+        if (!lesson.rows.length) {
+            throw new ErrorException(404, "Lesson not found or course not enrolled")
+        }
+
+        const exams = await pool.query(
+            `select id, lesson_id, question, option_a, option_b,
+                    option_c, option_d
+             from exams
+             where lesson_id=$1
+             order by id`,
+            [lessonId]
+        )
+
+        return {
+            status: 200,
+            lesson: lesson.rows[0],
+            total: exams.rows.length,
+            data: exams.rows
+        }
+    }
+
+    async submitStudentExam(req) {
+        const lessonId = Number(req.params.lessonId)
+        const studentId = req.user.id
+        const { answers } = req.body
+
+        if (!Number.isInteger(lessonId) || lessonId <= 0) {
+            throw new ErrorException(400, "Invalid lesson id")
+        }
+
+        if (!Array.isArray(answers) || answers.length === 0) {
+            throw new ErrorException(400, "Answers are required")
+        }
+
+        const lesson = await pool.query(
+            `select l.id
+             from lessons l
+             join sections s on s.id = l.section_id
+             join courses c on c.id = s.course_id
+             join studentcourse sc on sc.courses_id = c.id
+             where l.id=$1 and sc.student_id=$2 and c.status='active'`,
+            [lessonId, studentId]
+        )
+
+        if (!lesson.rows.length) {
+            throw new ErrorException(404, "Lesson not found or course not enrolled")
+        }
+
+        const exams = await pool.query(
+            `select id, correct_answer
+             from exams
+             where lesson_id=$1
+             order by id`,
+            [lessonId]
+        )
+
+        if (!exams.rows.length) {
+            throw new ErrorException(404, "No exams found")
+        }
+
+        const examIds = exams.rows.map(exam => exam.id)
+        const submittedIds = answers.map(answer => Number(answer.exam_id))
+
+        if (
+            answers.length !== exams.rows.length ||
+            new Set(submittedIds).size !== submittedIds.length ||
+            submittedIds.some(id => !examIds.includes(id))
+        ) {
+            throw new ErrorException(400, "Invalid or incomplete answers")
+        }
+
+        for (const answer of answers) {
+            if (!["A", "B", "C", "D"].includes(answer.answer)) {
+                throw new ErrorException(400, "Answer must be A, B, C or D")
+            }
+        }
+
+        let correctAnswers = 0
+
+        const resultAnswers = exams.rows.map(exam => {
+            const submitted = answers.find(
+                answer => Number(answer.exam_id) === exam.id
+            )
+
+            const isCorrect = submitted.answer === exam.correct_answer
+
+            if (isCorrect) correctAnswers++
+
+            return {
+                exam_id: exam.id,
+                answer: submitted.answer,
+                is_correct: isCorrect
+            }
+        })
+
+        const totalQuestions = exams.rows.length
+        const score = Math.round((correctAnswers / totalQuestions) * 100)
+
+        await pool.query(
+            `insert into exam_results
+            (student_id, lesson_id, total_questions, correct_answers, score, answers)
+            values($1,$2,$3,$4,$5,$6)`,
+            [
+                studentId,
+                lessonId,
+                totalQuestions,
+                correctAnswers,
+                score,
+                JSON.stringify(resultAnswers)
+            ]
+        )
+
+        return {
+            status: 201,
+            message: "Exam submitted successfully",
+            result: {
+                total_questions: totalQuestions,
+                correct_answers: correctAnswers,
+                wrong_answers: totalQuestions - correctAnswers,
+                score
+            }
+        }
+    }
+
 }
 
 const examsService = new ExamsService()

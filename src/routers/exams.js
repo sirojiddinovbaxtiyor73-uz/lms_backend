@@ -11,4 +11,8 @@ router
     .patch("/exams/:examId", authGuard, roleGuard("admin", "teacher"), validationMiddleware.ExamUpdate, examController.updateExam)
     .delete("/exams/:examId", authGuard, roleGuard("admin", "teacher"), examController.deleteExam)
 
+    .get("/exams/student/:lessonId", authGuard, roleGuard("student"), examController.getStudentExams)
+    .post("/exams/student/:lessonId/submit", authGuard, roleGuard("student"), examController.submitStudentExam)
+
+
 export default router
