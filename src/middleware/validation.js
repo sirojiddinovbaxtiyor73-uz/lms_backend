@@ -106,5 +106,40 @@ export default {
             return next(new ErrorException(400, error.message))
         }
         return next()
-    }
+    },
+
+
+    TaskCreate: (req, res, next) => {
+        let { error } = schema.taskSchema.validate(req.body ?? {})
+        if (error) {
+            return next(new ErrorException(400, error.message))
+        }
+        return next()
+    },
+
+    TaskUpdate: (req, res, next) => {
+        let { error } = schema.taskUpdateSchema.validate(req.body ?? {})
+        if (error) {
+            return next(new ErrorException(400, error.message))
+        }
+        return next()
+    },
+
+    ExamCreate: (req, res, next) => {
+        let { error } = schema.examSchema.validate(req.body ?? {})
+        if (error) {
+            return next(new ErrorException(400, error.message))
+        }
+        return next()
+    },
+
+    ExamUpdate: (req, res, next) => {
+        let { error } = schema.examUpdateSchema.validate(req.body ?? {})
+        if (error) {
+            return next(new ErrorException(400, error.message))
+        }
+        return next()
+    },
+
+    
 }

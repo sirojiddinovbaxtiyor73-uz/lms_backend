@@ -103,5 +103,35 @@ export default {
         amount: Joi.number().positive().max(9999999999),
         type: Joi.string().valid("cash", "payme", "card").required(),
         status: Joi.string().valid("paid", "pending", "cancelled").required()
-    })
+    }),
+
+    taskSchema: Joi.object({
+        lesson_id: Joi.number().integer().positive().required(),
+        description: Joi.string().trim().min(2).max(1000).required()
+    }),
+
+    taskUpdateSchema: Joi.object({
+        description: Joi.string().trim().min(2).max(1000)
+    }),
+
+    examSchema: Joi.object({
+        lesson_id: Joi.number().integer().positive().required(),
+        question: Joi.string().trim().min(2).max(1000).required(),
+        option_a: Joi.string().trim().min(1).max(500).required(),
+        option_b: Joi.string().trim().min(1).max(500).required(),
+        option_c: Joi.string().trim().min(1).max(500).required(),
+        option_d: Joi.string().trim().min(1).max(500).required(),
+        correct_answer: Joi.string().valid("A", "B", "C", "D").required()
+    }),
+
+    examUpdateSchema: Joi.object({
+        question: Joi.string().trim().min(2).max(1000),
+        option_a: Joi.string().trim().min(1).max(500),
+        option_b: Joi.string().trim().min(1).max(500),
+        option_c: Joi.string().trim().min(1).max(500),
+        option_d: Joi.string().trim().min(1).max(500),
+        correct_answer: Joi.string().valid("A", "B", "C", "D")
+    }).min(1),
+
+    
 }
